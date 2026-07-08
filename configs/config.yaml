@@ -1,0 +1,27 @@
+project:
+  name: Taxi Fare Prediction
+  version: 1.0
+
+data:
+
+  raw_data_path: data/raw/uber.csv
+
+  interim_data_path: data/interim/
+
+  processed_data_path: data/processed/
+
+artifacts:
+
+  model_path: models/
+
+  artifacts_path: artifacts/
+
+logging:
+
+  log_path: logs/
+
+api:
+
+  host: 0.0.0.0
+
+  port: 8000

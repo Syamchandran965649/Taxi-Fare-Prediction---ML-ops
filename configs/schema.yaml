@@ -1,0 +1,21 @@
+columns:
+
+  key: object
+
+  fare_amount: float64
+
+  pickup_datetime: object
+
+  pickup_longitude: float64
+
+  pickup_latitude: float64
+
+  dropoff_longitude: float64
+
+  dropoff_latitude: float64
+
+  passenger_count: int64
+
+target_column:
+
+  fare_amount
