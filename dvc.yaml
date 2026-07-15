@@ -1,0 +1,26 @@
+stages:
+
+  ingest:
+    cmd: python -m src.ingestion.ingestion
+    deps:
+      - src/ingestion/ingestion.py
+      - data/raw/uber.csv
+    outs:
+      - artifacts/raw.csv
+
+  validate:
+    cmd: python -m src.validation.validation
+    deps:
+      - src/validation/validation.py
+      - artifacts/raw.csv
+      - configs/schema.yaml
+    outs:
+      - artifacts/validation_report.json
+
+  preprocess:
+    cmd: python -m src.preprocessing.clean_data
+    deps:
+      - artifacts/raw.csv
+      - src/preprocessing/clean_data.py
+    outs:
+      - data/interim/cleaned.csv
