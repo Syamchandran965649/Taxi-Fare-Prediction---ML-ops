@@ -22,5 +22,5 @@ class MissingValueHandler:
                 df[column].mode()[0],
                 inplace=True
             )
-        logger.info("Missing Values Handled")
+        logger.infor("Missing Values Handled")
         return df

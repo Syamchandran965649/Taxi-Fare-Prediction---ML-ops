@@ -6,19 +6,16 @@ class DateTimeFeatures:
                df['pickup_datetime']
           )
 
-          df["pickup_year"]=df["pickup_datetime"].dt.year
+          df["pickup_year"]=df["pickip_datetime"].dt.year
 
-          df["pickup_month"]=df["pickup_datetime"].dt.month
+          df["pickup_month"]=df["pickip_datetime"].dt.month
 
-          df["pickup_day"]=df["pickup_datetime"].dt.day
+          df["pickup_day"]=df["pickip_datetime"].dt.day
 
-          df["pickup_hour"]=df["pickup_datetime"].dt.hour
+          df["pickup_hour"]=df["pickip_datetime"].dt.hour
 
           df["pickup_weekday"]=(
                df["pickup_datetime"].dt.weekday
           )
-
-          # Create processed directory if it doesn't exist
-
 
           return df
