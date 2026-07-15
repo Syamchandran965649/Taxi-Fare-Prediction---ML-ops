@@ -8,7 +8,7 @@ from src.feature_engineering.feature_builder import(FeatureBuilder)
 class DataPreprocessing:
     def transform(self,df):
 
-        df=MissingValueHandler.transform(df)
+        df=MissingValueHandler().transform(df)
 
         df=OutlierHandler().transform(df)
 
