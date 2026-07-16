@@ -16,8 +16,13 @@ class FeatureBuilder:
             df["dropoff_longitude"]
         )
 
+        # df.drop(
+        #     columns=["pickup_datetime"],
+        #     inplace=True
+        # )
         df.drop(
-            columns=["pickup_datetime"],
+            df.columns[0],
+            axis=1,
             inplace=True
         )
         return df

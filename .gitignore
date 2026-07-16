@@ -45,3 +45,14 @@ data/processed/*
 build/
 dist/
 *.egg-info/
+
+# Feast
+feature_store/registry/
+feature_store/*.db
+feature_store/registry/registry.db
+feature_store/registry/online_store.db
+
+# SQLite
+*.db
+*.db-journal
+*.sqlite

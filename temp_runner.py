@@ -25,53 +25,65 @@
 # print(report)
 
 
-from src.ingestion.ingestion import DataIngestion
-from src.validation.validation import DataValidation
-from src.preprocessing.preprocessing_pipeline import DataPreprocessing
+# from src.ingestion.ingestion import DataIngestion
+# from src.validation.validation import DataValidation
+# from src.preprocessing.preprocessing_pipeline import DataPreprocessing
 
 
-def main():
+# def main():
 
-    # -----------------------------
-    # Data Ingestion
-    # -----------------------------
-    ingestion = DataIngestion()
+#     # -----------------------------
+#     # Data Ingestion
+#     # -----------------------------
+#     ingestion = DataIngestion()
 
-    df = ingestion.initiate_data_ingestion()
+#     df = ingestion.initiate_data_ingestion()
 
-    print("\nData Ingestion Completed")
-    print(f"Dataset Shape : {df.shape}")
+#     print("\nData Ingestion Completed")
+#     print(f"Dataset Shape : {df.shape}")
 
-    # -----------------------------
-    # Data Validation
-    # -----------------------------
-    validator = DataValidation()
+#     # -----------------------------
+#     # Data Validation
+#     # -----------------------------
+#     validator = DataValidation()
 
-    report = validator.validate_dataset(df)
+#     report = validator.validate_dataset(df)
 
-    if not report["validation_status"]:
-        print("\nData Validation Failed")
-        print(report)
-        return
+#     if not report["validation_status"]:
+#         print("\nData Validation Failed")
+#         print(report)
+#         return
 
-    print("\nData Validation Successful")
+#     print("\nData Validation Successful")
 
-    # -----------------------------
-    # Data Preprocessing
-    # -----------------------------
-    preprocessing = DataPreprocessing()
+#     # -----------------------------
+#     # Data Preprocessing
+#     # -----------------------------
+#     preprocessing = DataPreprocessing()
 
-    processed_df = preprocessing.transform(df)
+#     processed_df = preprocessing.transform(df)
 
-    print("\nData Preprocessing Completed")
+#     processed_df.to_parquet(
+#     "data/processed/processed.parquet",
+#     index=False
+#     )
 
-    print(f"Processed Shape : {processed_df.shape}")
+#     print("\nData Preprocessing Completed")
 
-    print("\nFirst Five Records")
+#     print(f"Processed Shape : {processed_df.shape}")
 
-    print(processed_df.head())
+#     print("\nFirst Five Records")
+
+#     print(processed_df.head())
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    main()
+#     main()
+
+
+import pandas as pd
+
+df = pd.read_parquet("data/processed/processed.parquet")
+
+print(df.columns.tolist())
