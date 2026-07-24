@@ -6,7 +6,13 @@ def main():
     trainer=ModelTrainer()
     trainer.load_data()
     trainer.split_data()
-    trainer.train_random_forest()
+    results=trainer.train_all_models()
+    print("\nFinal Results")
+
+    for model_name,metrics in results.items():
+
+        print(model_name)
+        print(metrics)
 
 if __name__=="__main__":
     main()

@@ -13,6 +13,7 @@ from sklearn.ensemble import RandomForestRegressor
 
 from src.model_training.evaluate import regression_metrics
 from src.model_training.mlflow_logger import MLFlowLogger
+from src.model_training.model_collection import ModelCollection
 
 
 class ModelTrainer:
@@ -74,23 +75,17 @@ class ModelTrainer:
             self.y_test,
         )
 
-    def train_random_forest(self):
+    def train_model(self,model_name,model):
 
-        logger.info("Training Random Forest...\n")
+        logger.info(f"Training {model_name}...\n")
         logger.info('-'*50)
 
-        self.model=RandomForestRegressor(
-            random_state=self.config["train"]["random_state"],
-            n_estimators=self.config["train"]["n_estimators"],
-            n_jobs=self.config["train"]["n_jobs"]
-        )
-
-        self.model.fit(
+        model.fit(
             self.X_train,
             self.y_train
         )
 
-        self.y_pred=self.model.predict(
+        self.y_pred=model.predict(
             self.X_test
         )
 
@@ -98,7 +93,7 @@ class ModelTrainer:
 
         print(self.metrics)
 
-        logger.info("Random Forest Training Completed\n")
+        logger.info(f"{model_name} Training Completed\n")
 
         # logger.info("Evaluation Metrics")
 
@@ -111,25 +106,40 @@ class ModelTrainer:
             exist_ok=True
         )
 
-        model_path="artifacts/models/random_forest.pkl"
+        model_path=f"artifacts/models/{model_name.lower()}.pkl"
 
         joblib.dump(
-            self.model,
+            model,
             model_path
         )
 
         MLFlowLogger.log_model(
-            model=self.model,
+            model=model,
             metrics=self.metrics,
             params={
-                "model":'RandomForest',
-                "n_estimators":self.config["train"]["n_estimators"],
-                "random_state":self.config["train"]["random_state"]
+                "model":model_name
             },
-            model_name="RandomForest"
+            model_name=model_name
         )
         logger.info("Model Saved Successfully")
         print("\nModel Saved Successfully")
         print(model_path)
 
-        return self.model,self.metrics
+        return self.metrics
+
+    def train_all_models(self):
+
+        models = ModelCollection().get_models()
+
+        results = {}
+
+        for name, model in models.items():
+
+            metrics = self.train_model(
+                name,
+                model
+            )
+
+            results[name] = metrics
+
+        return results
