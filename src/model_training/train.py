@@ -1,5 +1,7 @@
 from src.model_training.trainer import ModelTrainer
 
+# function that defines training pipeline
+
 def main():
     trainer=ModelTrainer()
     trainer.load_data()

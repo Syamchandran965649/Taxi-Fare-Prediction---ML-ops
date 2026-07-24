@@ -1,6 +1,9 @@
 from pathlib import Path
 
 import pandas as pd
+import os
+import joblib
+
 from sklearn.model_selection import train_test_split
 from  src.utils.common import read_yaml
 
@@ -9,6 +12,7 @@ from src.utils.logger import logger
 from sklearn.ensemble import RandomForestRegressor
 
 from src.model_training.evaluate import regression_metrics
+from src.model_training.mlflow_logger import MLFlowLogger
 
 
 class ModelTrainer:
@@ -76,7 +80,9 @@ class ModelTrainer:
         logger.info('-'*50)
 
         self.model=RandomForestRegressor(
-            random_state=self.config["train"]["random_state"]
+            random_state=self.config["train"]["random_state"],
+            n_estimators=self.config["train"]["n_estimators"],
+            n_jobs=self.config["train"]["n_jobs"]
         )
 
         self.model.fit(
@@ -90,11 +96,40 @@ class ModelTrainer:
 
         self.metrics=regression_metrics(self.y_test,self.y_pred)
 
+        print(self.metrics)
+
         logger.info("Random Forest Training Completed\n")
 
-        logger.info("Evaluation Metrics")
+        # logger.info("Evaluation Metrics")
 
-        for metric,value in self.metrics.items():
-            logger.info(f"{metric}: {value:.4f}")
-            print(f"{metric}: {value:.4f}")
+        # for metric,value in self.metrics.items():
+        #     logger.info(f"{metric}: {value:.4f}")
+        #     print(f"{metric}: {value:.4f}")
+
+        os.makedirs(
+            "artifacts/models",
+            exist_ok=True
+        )
+
+        model_path="artifacts/models/random_forest.pkl"
+
+        joblib.dump(
+            self.model,
+            model_path
+        )
+
+        MLFlowLogger.log_model(
+            model=self.model,
+            metrics=self.metrics,
+            params={
+                "model":'RandomForest',
+                "n_estimators":self.config["train"]["n_estimators"],
+                "random_state":self.config["train"]["random_state"]
+            },
+            model_name="RandomForest"
+        )
+        logger.info("Model Saved Successfully")
+        print("\nModel Saved Successfully")
+        print(model_path)
+
         return self.model,self.metrics
