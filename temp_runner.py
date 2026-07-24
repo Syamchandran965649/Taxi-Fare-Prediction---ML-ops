@@ -82,8 +82,22 @@
 #     main()
 
 
-import pandas as pd
+# import pandas as pd
 
-df = pd.read_parquet("data/processed/processed.parquet")
+# df = pd.read_parquet("data/processed/processed.parquet")
 
-print(df.columns.tolist())
+# print(df.columns.tolist())
+
+import os
+import sys
+
+# Add project root to Python path
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+from src.model_training.train import main
+
+if __name__ == "__main__":
+    main()

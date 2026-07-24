@@ -10,6 +10,8 @@ data:
 
   processed_data_path: data/processed/
 
+  data_path:  data/processed/processed.parquet
+
 artifacts:
 
   model_path: models/
