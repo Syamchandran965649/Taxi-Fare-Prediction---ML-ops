@@ -34,3 +34,32 @@ class ModelCollection:
             )
 
         }
+
+    @staticmethod
+    def build_model(model_name,params):
+
+        if model_name == "RandomForest":
+
+            return RandomForestRegressor(
+            **params,
+            random_state=42,
+            n_jobs=-1,
+        )
+
+        elif model_name == "XGBoost":
+
+            return XGBRegressor(
+            **params,
+            random_state=42,
+        )
+
+        elif model_name == "LightGBM":
+
+            return LGBMRegressor(
+            **params,
+            random_state=42,
+        )
+
+        else:
+             raise ValueError(f"Unknown Model {model_name}")
+         

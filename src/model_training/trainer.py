@@ -14,6 +14,7 @@ from sklearn.ensemble import RandomForestRegressor
 from src.model_training.evaluate import regression_metrics
 from src.model_training.mlflow_logger import MLFlowLogger
 from src.model_training.model_collection import ModelCollection
+from src.model_training.tuner import ModelTuner
 
 
 class ModelTrainer:
@@ -133,13 +134,33 @@ class ModelTrainer:
 
         results = {}
 
-        for name, model in models.items():
+        tuner = ModelTuner(
+            self.X_train,
+            self.y_train,
+        )
 
-            metrics = self.train_model(
-                name,
-                model
+        for model_name in models.keys():
+
+            logger.info(f"Tuning {model_name}")
+
+            best_params=tuner.optimize(
+                model_name=model_name,
+                n_trials=20
             )
 
-            results[name] = metrics
+            logger.info(best_params)
+
+            model=ModelCollection.build_model(
+                model_name,
+                best_params
+            )
+
+            metrics=self.train_model(
+                model_name=model_name,
+                model=model
+            )
+
+            results[model_name] = metrics
+        logger.info("Training Completed")
 
         return results
