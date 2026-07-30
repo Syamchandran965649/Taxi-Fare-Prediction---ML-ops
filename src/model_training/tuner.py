@@ -5,6 +5,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 from lightgbm import LGBMRegressor
+from src.model_training.cross_validator import CrossValidator
 
 class ModelTuner:
 
@@ -119,21 +120,17 @@ class ModelTuner:
             else:
                 raise ValueError(f"Unknown model: {model_name}")
 
-            score=cross_val_score(
-                model,
+            results=CrossValidator.evaluate(
+                model=model,
 
-                self.X_train,
+                X=self.X_train,
 
-                self.y_train,
+                y=self.y_train,
 
                 cv=5,
+            )
 
-                scoring="neg_root_mean_squared_error",
-
-                n_jobs=-1
-            ).mean()
-
-            return score
+            return -results["cv_mean_rmse"]
 
         study=optuna.create_study(direction='maximize')
         study.optimize(objective,n_trials=n_trials)

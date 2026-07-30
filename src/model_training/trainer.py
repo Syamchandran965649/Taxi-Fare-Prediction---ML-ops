@@ -11,10 +11,12 @@ from src.utils.logger import logger
 
 from sklearn.ensemble import RandomForestRegressor
 
+
 from src.model_training.evaluate import regression_metrics
 from src.model_training.mlflow_logger import MLFlowLogger
 from src.model_training.model_collection import ModelCollection
 from src.model_training.tuner import ModelTuner
+from src.model_training.cross_validator import CrossValidator
 
 
 class ModelTrainer:
@@ -96,6 +98,15 @@ class ModelTrainer:
 
         logger.info(f"{model_name} Training Completed\n")
 
+        cv_results = CrossValidator.evaluate(
+        model=model,
+        X=self.X_train,
+        y=self.y_train
+        )
+
+        logger.info("Cross Validation Results")
+        logger.info(cv_results)
+
         # logger.info("Evaluation Metrics")
 
         # for metric,value in self.metrics.items():
@@ -120,6 +131,7 @@ class ModelTrainer:
             params={
                 "model":model_name
             },
+            cv_results=cv_results,
             model_name=model_name
         )
         logger.info("Model Saved Successfully")
