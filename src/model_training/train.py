@@ -12,7 +12,10 @@ def main():
     for model_name,metrics in results.items():
 
         print(model_name)
-        print(metrics)
+        # print(metrics)
+        for key,value in metrics.items():
+            print(f"{key}:{value:4f}")
+        print()
 
 if __name__=="__main__":
     main()

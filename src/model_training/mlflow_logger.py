@@ -17,7 +17,7 @@ class MLFlowLogger:
             for key,value in params.items():
                 mlflow.log_param(key,value)
 
-            for key,value in metrics.items():
+            for key,value in metrics.items():   
                 mlflow.log_metric(key,value)
 
             mlflow.log_metric(

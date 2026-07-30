@@ -17,6 +17,7 @@ from src.model_training.mlflow_logger import MLFlowLogger
 from src.model_training.model_collection import ModelCollection
 from src.model_training.tuner import ModelTuner
 from src.model_training.cross_validator import CrossValidator
+from src.model_training.Model_saver import ModelSaver
 
 
 class ModelTrainer:
@@ -138,18 +139,23 @@ class ModelTrainer:
         print("\nModel Saved Successfully")
         print(model_path)
 
-        return self.metrics
+        return self.metrics,cv_results
 
     def train_all_models(self):
 
         models = ModelCollection().get_models()
 
         results = {}
+        cross_results={}
 
         tuner = ModelTuner(
             self.X_train,
             self.y_train,
         )
+
+        best_model=None
+        best_model_name=None
+        best_rmse=float("inf")
 
         for model_name in models.keys():
 
@@ -167,12 +173,29 @@ class ModelTrainer:
                 best_params
             )
 
-            metrics=self.train_model(
+            metrics,cv_results=self.train_model(
                 model_name=model_name,
                 model=model
             )
 
             results[model_name] = metrics
+            cross_results[model_name]=cv_results
+
+            if cross_results["cv_mean_rmse"]<best_rmse:
+                best_rmse=cross_results["cv_mean_rmse"]
+                best_model=model
+                best_model_name=model_name
+
+        logger.info("-"*60)
+        logger.info(f"Best Model={best_model_name}")
+        logger.info(f"Best RMSE={best_rmse}")
+        logger.info("-"*60)
+
         logger.info("Training Completed")
 
-        return results
+        ModelSaver.save(
+            best_model,
+            "artifacts/models/best_model.joblib"
+        )
+
+        return results,cross_results
