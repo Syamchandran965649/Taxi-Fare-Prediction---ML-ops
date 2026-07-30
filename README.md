@@ -6,6 +6,7 @@
 - Scikit-Learn
 - XGBoost
 - DVC
+- Optuna
 - Feast
 - MLflow
 - FastAPI
