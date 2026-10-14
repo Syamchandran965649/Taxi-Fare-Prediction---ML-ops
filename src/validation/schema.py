@@ -13,4 +13,5 @@ def load_schema():
     return DataSchema(
         columns=schema["columns"],
         target_column=schema['target_column']
-    )
+    )    
+

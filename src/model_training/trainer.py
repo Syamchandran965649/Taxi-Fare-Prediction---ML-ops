@@ -141,61 +141,63 @@ class ModelTrainer:
 
         return self.metrics,cv_results
 
+   
     def train_all_models(self):
-
         models = ModelCollection().get_models()
 
         results = {}
-        cross_results={}
+        cross_results = {}
 
         tuner = ModelTuner(
             self.X_train,
             self.y_train,
         )
 
-        best_model=None
-        best_model_name=None
-        best_rmse=float("inf")
+        best_model = None
+        best_model_name = None
+        best_rmse = float("inf")
 
         for model_name in models.keys():
-
             logger.info(f"Tuning {model_name}")
 
-            best_params=tuner.optimize(
+            best_params = tuner.optimize(
                 model_name=model_name,
-                n_trials=20
+                n_trials=20,
             )
 
-            logger.info(best_params)
+            logger.info(f"Best parameters for {model_name}: {best_params}")
 
-            model=ModelCollection.build_model(
+            model = ModelCollection.build_model(
                 model_name,
-                best_params
+                best_params,
             )
 
-            metrics,cv_results=self.train_model(
+            metrics, cv_results = self.train_model(
                 model_name=model_name,
-                model=model
+                model=model,
             )
 
             results[model_name] = metrics
-            cross_results[model_name]=cv_results
+            cross_results[model_name] = cv_results
 
-            if cross_results["cv_mean_rmse"]<best_rmse:
-                best_rmse=cross_results["cv_mean_rmse"]
-                best_model=model
-                best_model_name=model_name
+            if cv_results["cv_mean_rmse"] < best_rmse:
+                best_rmse = cv_results["cv_mean_rmse"]
+                best_model = model
+                best_model_name = model_name
 
-        logger.info("-"*60)
-        logger.info(f"Best Model={best_model_name}")
-        logger.info(f"Best RMSE={best_rmse}")
-        logger.info("-"*60)
+        if best_model is None:
+            raise RuntimeError("No model was successfully trained.")
 
-        logger.info("Training Completed")
+        logger.info("-" * 60)
+        logger.info(f"Best Model: {best_model_name}")
+        logger.info(f"Best CV RMSE: {best_rmse:.4f}")
+        logger.info("-" * 60)
 
         ModelSaver.save(
             best_model,
-            "artifacts/models/best_model.joblib"
+            "artifacts/models/best_model.joblib",
         )
 
-        return results,cross_results
+        logger.info("Training completed successfully.")
+
+        return results, cross_results
